@@ -5,7 +5,8 @@ program WaterfallFisher;
 {$i srl-6/lib/misc/srlplayerform.simba}
 
 const
-  initialExp= 1;
+  version = 1.5;
+  initialExp = 1;
   HAND_HUE = 0.7;
   HAND_SAT = 2.0;
   playerModBMP := BitmapFromString (11, 6, 'meJy7e+XK/GnTcKHJXV13CSkQFeSAqGFkYAAiZAZQVlVeUJSfHa4AjQQq4Odi4uNkxKNAiJdNiIcZyMCF5KQEABnjWTQ=');
@@ -59,6 +60,25 @@ begin
       Result := Copy(str, (p + sL), ((1 + strL) - (p + sL)));
   end else
     Result := '';
+end;
+
+procedure getUpdate();
+var
+  newFile: Integer;
+  newVer: Extended;
+begin
+  newVer := strToFloat(getPage('http://tomstewart.net/proxy.php?url=https://raw.githubusercontent.com/JagerBomber/scob/waterfallfisher/version.txt'));
+  printf('Current script Version: %f || Online script Version: %f', [Version, newVer]);
+
+  if newVer > Version then
+  begin
+    printf('Updating Waterfall Fisher by Scob.simba from Version %f to %f', [Version, newVer]);
+    newFile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
+    writeFileString(newFile, getPage('http://tomstewart.net/proxy.php?url=https://raw.githubusercontent.com/JagerBomber/scob/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba'));
+    closeFile(newFile);
+    print('Please reopen this file');
+    terminateScript();
+  end;
 end;
 
 procedure initPlayerForm();
@@ -584,6 +604,8 @@ end;
 
 begin
   clearDebug();
+  getUpdate();
+
   initPlayerForm();
   runPlayerForm();
   if (not playerForm.isScriptReady) then exit;
