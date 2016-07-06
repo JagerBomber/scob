@@ -7,7 +7,7 @@ program WaterfallFisher;
  (* ---------THIS SCRIPT CONTAINS AUTO-UPDATER--------- *)
 
 const
-  version = 1.5;
+  ScriptVersion = '1.5';
   initialExp = 1;
   HAND_HUE = 0.7;
   HAND_SAT = 2.0;
@@ -64,29 +64,43 @@ begin
     Result := '';
 end;
 
-procedure getUpdate();
-var
-  newFile: Integer;
-  newVer: Extended;
-begin
-  newVer := strToFloat(getPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Version.txt'));
-  printf('Current script Version: %f || Online script Version: %f', [Version, newVer]);
-
-  if newVer > Version then
-  begin
-    printf('Updating Waterfall Fisher by Scob.simba from Version %f to %f', [Version, newVer]);
-    newFile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
-    writeFileString(newFile, getPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba'));
-    closeFile(newFile);
-    print('');
-    print('');
-    print('WATERFALL FISHER HAS BEEN UPDATED!');
-    print('PLEASE RE-OPEN THIS FILE');
-    print('');
-    print('');
-    terminateScript();
-  end;
-end;
+{
+AutoupdateMe;
+By: Shuttleu
+}
+Procedure AutoUpdateMe;
+Var
+  Neifile: Integer;
+  OnlineVersion, NewScript, NeiFeilNennen: String;
+Begin
+  Writeln('Checking for script updates...');
+  OnlineVersion := GetPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Version.txt');
+  Writeln('Online Version: '+ToStr(OnlineVersion));
+  Writeln('Local Version: '+ToStr(ScriptVersion));
+  If (trim(OnlineVersion) > ScriptVersion) Then
+  Begin
+    WriteLn('Newer script version online!');
+    WriteLn('Autoupdating to newer version.');
+    NewScript := GetPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba');
+    Neifile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
+    Try
+      WriteFileString(Neifile, NewScript);
+    Except
+      Begin
+        WriteLn('Fatal error writing to '+NeiFeilNennen+'!!');
+        Terminatescript;
+      End;
+    End;
+    CloseFile(Neifile);
+    Writeln('');
+    WriteLn('New script downloaded!');
+    WriteLn('PLEASE RE-OPEN THIS FILE');
+    Writeln('');
+    Writeln('');
+    TerminateScript;
+  End Else
+    WriteLn('You have the latest version of the script!');
+End;
 
 procedure initPlayerForm();
 begin
@@ -611,7 +625,7 @@ end;
 
 begin
   clearDebug();
-  getUpdate();
+  AutoUpdateMe;
 
   initPlayerForm();
   runPlayerForm();
