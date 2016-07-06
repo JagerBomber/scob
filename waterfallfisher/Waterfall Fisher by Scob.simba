@@ -94,7 +94,7 @@ Begin
     CloseFile(Neifile);
     Writeln('');
     WriteLn('New script downloaded!');
-    WriteLn('PLEASE RE-OPEN THIS FILE');
+    WriteLn('PLEASE RE-OPEN SIMBA');
     Writeln('');
     Writeln('');
     TerminateScript;
