@@ -69,14 +69,14 @@ var
   newFile: Integer;
   newVer: Extended;
 begin
-  newVer := strToFloat(getPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Version.txt'));
+  newVer := strToFloat(getPage('http://tomstewart.net/proxy.php?url=https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Version.txt'));
   printf('Current script Version: %f || Online script Version: %f', [Version, newVer]);
 
   if newVer > Version then
   begin
     printf('Updating Waterfall Fisher by Scob.simba from Version %f to %f', [Version, newVer]);
     newFile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
-    writeFileString(newFile, getPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba'));
+    writeFileString(newFile, getPage('http://tomstewart.net/proxy.php?url=https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba'));
     closeFile(newFile);
     print('');
     print('');
