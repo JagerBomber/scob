@@ -78,8 +78,12 @@ begin
     newFile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
     writeFileString(newFile, getPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba'));
     closeFile(newFile);
+    print('');
+    print('');
     print('WATERFALL FISHER HAS BEEN UPDATED!');
     print('PLEASE RE-OPEN THIS FILE');
+    print('');
+    print('');
     terminateScript();
   end;
 end;
