@@ -4,6 +4,8 @@ program WaterfallFisher;
 {$I SRL-6/SRL.simba}
 {$i srl-6/lib/misc/srlplayerform.simba}
 
+ (* ---------THIS SCRIPT CONTAINS AUTO-UPDATER--------- *)
+
 const
   version = 1.5;
   initialExp = 1;
@@ -76,7 +78,8 @@ begin
     newFile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
     writeFileString(newFile, getPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba'));
     closeFile(newFile);
-    print('Please reopen this file');
+    print('WATERFALL FISHER HAS BEEN UPDATED!');
+    print('PLEASE RE-OPEN THIS FILE');
     terminateScript();
   end;
 end;
