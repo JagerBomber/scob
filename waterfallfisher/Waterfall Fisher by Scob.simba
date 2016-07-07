@@ -74,14 +74,14 @@ Var
   OnlineVersion, NewScript, NeiFeilNennen: String;
 Begin
   Writeln('Checking for script updates...');
-  OnlineVersion := GetPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Version.txt');
+  OnlineVersion := GetPage('http://static.frement.net/proxy.php?u=https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Version.txt');
   Writeln('Online Version: '+ToStr(OnlineVersion));
   Writeln('Local Version: '+ToStr(ScriptVersion));
   If (trim(OnlineVersion) > ScriptVersion) Then
   Begin
     WriteLn('Newer script version online!');
     WriteLn('Autoupdating to newer version.');
-    NewScript := GetPage('https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba');
+    NewScript := GetPage('http://static.frement.net/proxy.php?u=https://raw.githubusercontent.com/JagerBomber/scob/master/waterfallfisher/Waterfall%20Fisher%20by%20Scob.simba');
     Neifile := rewriteFile(scriptPath + 'Waterfall Fisher by Scob.simba', false);
     Try
       WriteFileString(Neifile, NewScript);
