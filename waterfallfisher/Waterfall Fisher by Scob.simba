@@ -7,7 +7,7 @@ program WaterfallFisher;
  (* ---------THIS SCRIPT CONTAINS AUTO-UPDATER--------- *)
 
 const
-  ScriptVersion = '1.5';
+  ScriptVersion = '1.51';
   initialExp = 1;
   HAND_HUE = 0.7;
   HAND_SAT = 2.0;
@@ -279,6 +279,7 @@ procedure LoginPlayer;
 begin
   players[currentPlayer].login();
   failTimer.start();
+  closePopup();
   minimap.clickCompass();
   mainScreen.setAngle(MS_ANGLE_HIGH);
   exitTreasure();
