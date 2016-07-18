@@ -7,7 +7,7 @@ program WaterfallFisher;
  (* ---------THIS SCRIPT CONTAINS AUTO-UPDATER--------- *)
 
 const
-  ScriptVersion = '1.51';
+  ScriptVersion = '1.6';
   initialExp = 1;
   HAND_HUE = 0.7;
   HAND_SAT = 2.0;
@@ -114,9 +114,9 @@ begin
 
     editBoxHints := ['Select world', 'in minutes', 'in minutes','from 2 to 100, 2 is 0,06% random chance, 100 is 3,3% every loop'];
 
-    checkBoxLabels := ['Invention support', 'Look for J/P MOD', 'ChatBox antiban search'];
-    checkBoxDefaults := ['True', 'False', 'False'];
-    checkBoxHints := ['Dissasembles rod at lvl 10', 'Changes world when J/P MOD appears', 'Changes world when bot/macro/auto found in chatbox' ];
+    checkBoxLabels := ['Invention support', 'Perks support', 'Look for J/P MOD', 'ChatBox antiban search'];
+    checkBoxDefaults := ['True', 'False', 'False', 'False'];
+    checkBoxHints := ['Dissasembles rod at lvl 10', 'Adds back perks to your rod', 'Changes world when J/P MOD appears', 'Changes world when bot/macro/auto found in chatbox' ];
 
     comboBoxLabels := ['Select spot', 'Select rod'];
     comboBoxDefaults := ['Spot 97', 'Rod o-matic'];
@@ -144,8 +144,9 @@ begin
     writeln('Spot level:            ', players[i].strings[0]);
     writeln('Rod:                   ', players[i].strings[1]);
     writeln('Inv support:           ', players[i].booleans[0]);
-    writeln('ChatBox antiban:       ', players[i].booleans[1]);
-    writeln('Look for p/j mod:      ', players[i].booleans[2]);
+    writeln('Perks support:         ', players[i].booleans[1]);
+    writeln('ChatBox antiban:       ', players[i].booleans[2]);
+    writeln('Look for p/j mod:      ', players[i].booleans[3]);
     writeln('');
   end;
 end;
@@ -168,9 +169,10 @@ begin
       booleans[0] := strToBool(playerForm.players[i].settings[4]);
       booleans[1] := strToBool(playerForm.players[i].settings[5]);
       booleans[2] := strToBool(playerForm.players[i].settings[6]);
+      booleans[3] := strToBool(playerForm.players[i].settings[7]);
 
-      strings[0] := playerForm.players[i].settings[7];
-      strings[1] := playerForm.players[i].settings[8];
+      strings[0] := playerForm.players[i].settings[8];
+      strings[1] := playerForm.players[i].settings[9];
 
       world := integers[0];
     end;
@@ -259,10 +261,11 @@ begin
 end;
 
 var
- rodDTM, invDTM, rodEQDTM: integer;
+ gizmoDTM, rodDTM, invDTM, rodEQDTM: integer;
 
 procedure LoadTheDTM;
 begin
+  gizmoDTM := DTMFromString('m1gAAAHic42JgYAhjY2CIAOIEIE4E4nAg9gJiHyAOAmIPII4H4nwmBoY4IE4B4hwgrgDiaiDOA+J0IC4F4gIg9v27BmgqE0EsyUAcYCQSIwAAW+MKJQ==');
   rodDTM := DTMFromString('mggAAAHicY2NgYJBlZ2DQAWIBIJYBYjEgVgRiPWYGBgUgNgdiDSC2AmIDIP67TRmoiwkDSzJgB4w4MAQAAGU9BAU=');
   invDTM := DTMFromString('m6wAAAHic42YAAlYGhn8sDAzsQJoViH8B2T+A+DcQs7BC5JmB+A+QX8DEwJABxPlAnA3FRUBcCsW1QFwBxJVA/ObRcgYuAREGET0rBnUrRzAW1DZnkNY2YJABYkFJGQZ+JW0GXgUNBn4G4gEjCRgJAADwmxEJ');
   rodEQDTM := DTMFromString('mggAAAHicY2NgYAhnY2BIAWIPIA4B4gggDgTiDCYGhmggLgLiZCDOhbJnVDkBdTFhYEkG7IARB4YAAFFyBis=');
@@ -270,6 +273,7 @@ begin
 
 procedure FrDTM;
 begin
+  FreeDTM(gizmoDTM);
   FreeDTM(rodDTM);
   FreeDTM(invDTM);
   FreeDTM(rodEQDTM);
@@ -292,6 +296,86 @@ begin
   result := findColorsTolerance(TPA, Rod.RodColor, spot.Searchbox, Rod.RodTol, colorSetting(2, HAND_HUE, HAND_SAT));
 end;
 
+procedure AddPerks();
+var
+  x, y, n, m: integer;
+ begin
+  gameTabs.openTab(TAB_EQUIPMENT);
+
+  if gameTabs.openTab(TAB_EQUIPMENT) then
+  begin
+
+{ UNEQUIPPING ROD }
+
+    if findDTM(rodEQDTM, x, y, tabBackPack.getbounds()) then
+    begin
+      mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_LEFT);
+      wait(random(500, 1500));
+    end;
+
+    gameTabs.openTab(TAB_BACKPACK);
+
+    if gameTabs.openTab(TAB_BACKPACK) then
+    begin
+
+{ CHECKING FOR THE FIRST GIZMO }
+
+      if findDTM(gizmoDTM, n, m, tabBackPack.getbounds()) then
+      begin
+        mouse(point(n, m).randRange(4, 8, -8, 8), MOUSE_LEFT);
+        wait(random(500, 1500));
+      end else writeln('we couldnt find gizmo DTM');
+
+      if findDTM(rodEQDTM, x, y, tabBackPack.getbounds()) then
+      begin
+        mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_MOVE);
+
+        if isMouseOverText(['Item Level'], 100, true) then
+        begin
+          mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_LEFT);
+          writeln('Gizmo added');
+          wait(random(500, 1500));
+        end;
+      end;
+
+{ CHECKING FOR ANOTHER GIZMO }
+
+      if findDTM(gizmoDTM, n, m, tabBackPack.getbounds()) then
+      begin
+        mouse(point(n, m).randRange(4, 8, -8, 8), MOUSE_LEFT);
+        wait(random(500, 1500));
+      end else writeln('we couldnt find second gizmo DTM');
+
+      if findDTM(rodEQDTM, x, y, tabBackPack.getbounds()) then
+      begin
+        mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_MOVE);
+
+        if isMouseOverText(['Item Level'], 100, true) then
+        begin
+          mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_LEFT);
+          writeln('Gizmo added');
+          wait(random(500, 1500));
+        end;
+      end;
+
+{ EQUIPPING ROD }
+
+      if findDTM(rodEQDTM, x, y, tabBackPack.getbounds()) then
+      begin
+        mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_MOVE);
+
+        if isMouseOverText(['Item Level'], 100, true) then
+         begin
+            wait(random(500, 1500));
+            mouse(point(x, y).randRange(4, 8, -8, 8), MOUSE_LEFT);
+            wait(random(500, 1500));
+         end;
+      end;
+    end;
+    gameTabs.openTab(TAB_BACKPACK);
+  end;
+ end;
+
 procedure Dissasemble;
 var
   x, y, p, l, c, d: integer;
@@ -303,7 +387,7 @@ begin
       mouse(x, y, 3, 3, MOUSE_LEFT);
       wait(random(1000, 2000));
 
-      if isMouseOverText(['10'], 100, true) then
+      if isMouseOverText(['10'], 150, true) then
       begin
         holdMouse(x + random(-3, 3), y + random(-3, 3), MOUSE_LEFT);
         wait(random(200));
@@ -335,6 +419,7 @@ begin
       end else
       writeln('We do not have any other rods in backpack');
   end;
+  if players[currentPlayer].booleans[1] then AddPerks();
 end;
 
 procedure CheckRod();      //credits to TSN for idea
@@ -355,15 +440,13 @@ begin
       wait(random(500, 1500));
 
       s := getMouseOverText(True);
-      writeln(s);
       o := After(': ', s);
-      writeln(o);
       n := Before(#13#10 + 'Item', o);
       writeln(n);
 
       for i := 1 to 12 do
 
-        if strToIntDef(n, 1) = i then
+        if StrToIntDef(ExtractFromStr(n,numbers), 1) = i then
         begin
           Lvl := i;
           writeLn('Our rod O-matic is lvl ',i);
@@ -610,9 +693,9 @@ begin
       wait(random(1000, 1400));        //makes script faster or slower
     end else wait(random(1000, 1500)); //as above but if doesnt support inv
 
-    if players[currentPlayer].booleans[1] then findMod();
+    if players[currentPlayer].booleans[2] then findMod();
 
-    if players[currentPlayer].booleans[2] then botChatSearch();
+    if players[currentPlayer].booleans[3] then botChatSearch();
 
     Report;
     antiban;
